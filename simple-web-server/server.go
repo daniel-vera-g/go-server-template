@@ -1,10 +1,12 @@
 package main
 
 import (
+	// TODO rm fmt
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"text/template"
 )
 
 // Function of the type http.HandleFunc
@@ -56,16 +58,47 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 	// Load the page data
 	// TODO error handling
 	p, _ := loadPage(title)
-	// Format the page with HTML and write it to w(ResponseWriter)
-	fmt.Fprintf(w, "<h1>%s</h1><div>%s</div>", p.Title, p.Body)
+	// Read contents of HTML file & return contents
+	t, _ := template.ParseFiles("view.html")
+	// Write generated HTML to the reponse
+	t.Execute(w, p)
+}
+
+// editHandler loads the page
+// creates an empty page struct if not existent
+// displays an HTML form
+func editHandler(w http.ResponseWriter, r *http.Request) {
+	title := r.URL.Path[len("/edit/"):]
+	p, err := loadPage(title)
+	// If not existent, create empty Page struct
+	if err != nil {
+		p = &Page{Title: title}
+	}
+	// Read contents of HTML file & return contents
+	t, _ := template.ParseFiles("edit.html")
+	// Write generated HTML to the reponse
+	t.Execute(w, p)
+}
+
+// renderTemplate renders a specific HTML page
+// It takes the ResponseWriter,
+
+func renderTemplate(w ResponseWriter) {
+
 }
 
 func main() {
 	// Handle all root request with the handler function
 	// http.HandleFunc("/", handler)
 
-	// Handle requests for a specific site
+	// Reques handler
+	// Specific site
 	http.HandleFunc("/view/", viewHandler)
+	// Edit page
+	http.HandleFunc("/edit/", editHandler)
+	// Save data
+	http.HandleFunc("/save/", saveHandler)
+
 	// Server the page on Port 8080 and return if there is an unexpected error
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
