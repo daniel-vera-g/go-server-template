@@ -1,20 +1,11 @@
 package main
 
 import (
-	// TODO rm fmt
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"text/template"
 )
-
-// Function of the type http.HandleFunc
-// Takes a ResponseWriter to assemble the HTTP response
-// and a Request with the client HTTP request data
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Path: %s", r.URL.Path[1:])
-}
 
 /**
 * TODO export to external file for separation of concerns
@@ -56,8 +47,12 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the page to be shown
 	title := r.URL.Path[len("/view/"):]
 	// Load the page data
-	// TODO error handling
-	p, _ := loadPage(title)
+	p, err := loadPage(title)
+	// If the page does not exist redirect them to edit
+	if err != nil {
+		http.Redirect(w, r, "/edit/"+title, http.StatusFound)
+		return
+	}
 	renderTemplate(w, "view", p)
 }
 
@@ -83,6 +78,15 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 	t.Execute(w, p)
 }
 
+// Handle submission of forms from the edit page
+func saveHandler(w http.ResponseWriter, r *http.Request) {
+	title := r.URL.Path[len("/save/"):]
+	body := r.FormValue("body")
+	p := &Page{Title: title, Body: []byte(body)}
+	p.save()
+	http.Redirect(w, r, "/view/"+title, http.StatusFound)
+}
+
 func main() {
 	// Handle all root request with the handler function
 	// http.HandleFunc("/", handler)
@@ -93,7 +97,7 @@ func main() {
 	// Edit page
 	http.HandleFunc("/edit/", editHandler)
 	// Save data
-	// http.HandleFunc("/save/", saveHandler)
+	http.HandleFunc("/save/", saveHandler)
 
 	// Server the page on Port 8080 and return if there is an unexpected error
 	log.Fatal(http.ListenAndServe(":8080", nil))
