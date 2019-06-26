@@ -72,10 +72,10 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 // renderTemplate renders a specific HTML page
 // It takes the ResponseWriter, a name of the template and a pointer to the page
 func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
-	// Read contents of HTML file & return contents
-	t, _ := template.ParseFiles(tmpl + ".html")
-	// Write generated HTML to the reponse
-	t.Execute(w, p)
+	err := templates.ExecuteTemplate(w, tmpl+".html", p)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // Handle submission of forms from the edit page
@@ -86,6 +86,9 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 	p.save()
 	http.Redirect(w, r, "/view/"+title, http.StatusFound)
 }
+
+// Parse files once at Programm initialization
+var templates = template.Must(template.ParseFiles("edit.html", "view.html"))
 
 func main() {
 	// Handle all root request with the handler function
