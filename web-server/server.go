@@ -1,9 +1,11 @@
 package main
 
 import (
+	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"regexp"
 	"text/template"
 )
 
@@ -43,9 +45,7 @@ func loadPage(title string) (*Page, error) {
 
 // View handler to view a page
 // Handle URLs with the prefix /view/
-func viewHandler(w http.ResponseWriter, r *http.Request) {
-	// Get the page to be shown
-	title := r.URL.Path[len("/view/"):]
+func viewHandler(w http.ResponseWriter, r *http.Request, title string) {
 	// Load the page data
 	p, err := loadPage(title)
 	// If the page does not exist redirect them to edit
@@ -59,8 +59,7 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 // editHandler loads the page
 // creates an empty page struct if not existent
 // displays an HTML form
-func editHandler(w http.ResponseWriter, r *http.Request) {
-	title := r.URL.Path[len("/edit/"):]
+func editHandler(w http.ResponseWriter, r *http.Request, title string) {
 	p, err := loadPage(title)
 	// If not existent, create empty Page struct
 	if err != nil {
@@ -78,17 +77,49 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 	}
 }
 
+// Wrapper funtion to take a handler function & return a http.ResponseWriter function
+func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Extract the page title from request + do validation
+		m := validPath.FindStringSubmatch(r.URL.Path)
+		if m == nil {
+			http.NotFound(w, r)
+			return
+		}
+		// Call the provided handler `fn`
+		fn(w, r, m[2])
+	}
+}
+
 // Handle submission of forms from the edit page
-func saveHandler(w http.ResponseWriter, r *http.Request) {
-	title := r.URL.Path[len("/save/"):]
+func saveHandler(w http.ResponseWriter, r *http.Request, title string) {
+	// Load the page data
 	body := r.FormValue("body")
 	p := &Page{Title: title, Body: []byte(body)}
-	p.save()
+	err := p.save()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	http.Redirect(w, r, "/view/"+title, http.StatusFound)
 }
 
 // Parse files once at Programm initialization
 var templates = template.Must(template.ParseFiles("edit.html", "view.html"))
+
+// Store validation expression -> Only specific pages
+var validPath = regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
+
+// getTitle extracts the page title with the validPath Global variable
+// It returns a 404 error or the title of the page
+func getTitle(w http.ResponseWriter, r *http.Request) (string, error) {
+	m := validPath.FindStringSubmatch(r.URL.Path)
+	if m == nil {
+		http.NotFound(w, r)
+		return "", errors.New("Invalid Page Title")
+	}
+	return m[2], nil
+}
 
 func main() {
 	// Handle all root request with the handler function
@@ -96,11 +127,11 @@ func main() {
 
 	// Reques handler
 	// Specific site
-	http.HandleFunc("/view/", viewHandler)
+	http.HandleFunc("/view/", makeHandler(viewHandler))
 	// Edit page
-	http.HandleFunc("/edit/", editHandler)
+	http.HandleFunc("/edit/", makeHandler(editHandler))
 	// Save data
-	http.HandleFunc("/save/", saveHandler)
+	http.HandleFunc("/save/", makeHandler(saveHandler))
 
 	// Server the page on Port 8080 and return if there is an unexpected error
 	log.Fatal(http.ListenAndServe(":8080", nil))
