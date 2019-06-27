@@ -3,7 +3,9 @@
 A repository hosting different helpful Go patterns for the web.
 
 1. The `master` branch holds my preferenced folder structure & minimal code setup.
+	* A simple CRUD note taking application.
 2. The `original-doc` branch holds an implementation of the original web application documentation.
+	* A simple page creation web application. 
 
 ## Stack
 
