@@ -1,6 +1,6 @@
 # Go web patterns
 
-A repository hosting different helpful Go patterns for the web.
+A repository hosting different helpful Go server patterns.
 
 1. The `master` branch holds my preferenced folder structure & minimal code setup.
 	* A simple CRUD note taking application.
