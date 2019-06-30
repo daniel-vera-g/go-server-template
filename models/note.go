@@ -1,17 +1,19 @@
 /*
  * Let users create/store notes
  */
-
 package models
 
 import (
 	"fmt"
-	u "utils"
+
+	u "../utils"
+	"github.com/jinzhu/gorm"
 )
 
 type Note struct {
+	gorm.Model
 	Name   string `json:"name"`
-	Title  string `json:"title"`
+	Note   string `json:"note"`
 	UserId uint   `json:"user_id"` //The user that this note belongs to
 }
 
@@ -20,14 +22,14 @@ type Note struct {
 
 returns message and true if the requirement is met
 */
-func (note *note) Validate() (map[string]interface{}, bool) {
+func (note *Note) Validate() (map[string]interface{}, bool) {
 
 	if note.Name == "" {
-		return u.Message(false, "note name should be on the payload"), false
+		return u.Message(false, "Note name should be on the payload"), false
 	}
 
-	if note.Phone == "" {
-		return u.Message(false, "Phone number should be on the payload"), false
+	if note.Note == "" {
+		return u.Message(false, "Note text should be on the payload"), false
 	}
 
 	if note.UserId <= 0 {
@@ -38,14 +40,11 @@ func (note *note) Validate() (map[string]interface{}, bool) {
 	return u.Message(true, "success"), true
 }
 
-func (note *note) Create() map[string]interface{} {
+func (note *Note) Create() map[string]interface{} {
 
 	if resp, ok := note.Validate(); !ok {
 		return resp
 	}
-
-	// Add Note
-	insert, err := db.Query("INSERT INTO notes VALUES ()")
 
 	GetDB().Create(note)
 
@@ -54,9 +53,9 @@ func (note *note) Create() map[string]interface{} {
 	return resp
 }
 
-func Getnote(id uint) *note {
+func GetNote(id uint) *Note {
 
-	note := &note{}
+	note := &Note{}
 	err := GetDB().Table("notes").Where("id = ?", id).First(note).Error
 	if err != nil {
 		return nil
@@ -64,9 +63,9 @@ func Getnote(id uint) *note {
 	return note
 }
 
-func Getnotes(user uint) []*note {
+func GetNotes(user uint) []*Note {
 
-	notes := make([]*note, 0)
+	notes := make([]*Note, 0)
 	err := GetDB().Table("notes").Where("user_id = ?", user).Find(&notes).Error
 	if err != nil {
 		fmt.Println(err)
