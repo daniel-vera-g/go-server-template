@@ -7,16 +7,15 @@ import (
 	"fmt"
 	"os"
 
-	"database/sql"
-
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/joho/godotenv"
 )
 
-func init() {
-	fmt.Println("Initialising the DB")
+var db *gorm.DB
 
-	// Load credentials
+func init() {
+
 	e := godotenv.Load()
 	if e != nil {
 		fmt.Print(e)
@@ -27,12 +26,18 @@ func init() {
 	dbName := os.Getenv("db_name")
 	dbHost := os.Getenv("db_host")
 
-	// Open DB Connection
-	db, err := sql.Open("mysql", "%s:%s@tcp(127.0.0.1:3306)/%s", username, password, dbName)
+	dbUri := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", dbHost, username, dbName, password)
+	fmt.Println(dbUri)
+
+	conn, err := gorm.Open("mysql", dbUri)
 	if err != nil {
-		panic(err.Error())
+		fmt.Print(err)
 	}
 
-	// Defer close till connection has finisched
-	defer db.Close()
+	db = conn
+	db.Debug().AutoMigrate(&Account{}, &Note{})
+}
+
+func GetDB() *gorm.DB {
+	return db
 }
