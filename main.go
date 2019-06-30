@@ -25,13 +25,15 @@ func main() {
 
 	// Create, retrieve, change & delete note
 	router.HandleFunc("/api/notes/new", controllers.CreateNote).Methods("POST")
-	router.HandleFunc("/api/me/notes", controllers.GetNoteFor).Methods("GET") //  user/2/notes
-	router.HandleFunc("/api/me/notes/change", controllers.ChangeNote).Methods("PUT")
-	router.HandleFunc("/api/me/notes/delete/" controllers.DeleteNote).Methods("DELETE")
+	router.HandleFunc("/api/me/notes", controllers.GetNotesFor).Methods("GET") //  user/2/notes
+	// TODO
+	// router.HandleFunc("/api/me/notes/change", controllers.ChangeNote).Methods("PUT")
+	// TODO
+	// router.HandleFunc("/api/me/notes/delete/" controllers.DeleteNote).Methods("DELETE")
 
 	router.Use(app.JwtAuthentication) //attach JWT auth middleware
 
-	//router.NotFoundHandler = app.NotFoundHandler
+	// router.NotFoundHandler = app.NotFoundHandler
 
 	port := os.Getenv("PORT")
 	if port == "" {

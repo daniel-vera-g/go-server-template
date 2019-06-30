@@ -3,18 +3,17 @@
  * verify authenticity
  * and send appropiate response or proceed with the request
  */
-
 package app
 
 import (
 	"context"
 	"fmt"
-	"go-contacts/models"
-	u "go-contacts/utils"
 	"net/http"
 	"os"
 	"strings"
 
+	"../models"
+	u "../utils"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
