@@ -3,15 +3,13 @@
  * create new account
  * and genrate JWT token
  */
-
 package models
 
 import (
 	"os"
 	"strings"
 
-	u "../utils"
-
+	u "./utils"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
