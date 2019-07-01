@@ -12,8 +12,8 @@ import (
 	"os"
 	"strings"
 
-	"../models"
-	u "../utils"
+	u "./utils"
+	"github.com/daniel-vera-g/go-server-template/models"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 

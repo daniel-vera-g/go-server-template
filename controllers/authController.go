@@ -8,8 +8,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"./models"
 	u "./utils"
+	"github.com/daniel-vera-g/go-server-template/models"
 )
 
 var CreateAccount = func(w http.ResponseWriter, r *http.Request) {

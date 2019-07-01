@@ -9,9 +9,8 @@ import (
 	"net/http"
 	"os"
 
-	"./app"
-	"./controllers"
-
+	"github.com/daniel-vera-g/go-server-template/app"
+	"github.com/daniel-vera-g/go-server-template/controllers"
 	"github.com/gorilla/mux"
 )
 
