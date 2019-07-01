@@ -2,11 +2,10 @@ version: '3'
 services:
   # Golang server
   app:
+    container_name: golang-server
     build:
       context: .
       dockerfile: Dockerfile
-    # Name of the Image
-    container_name: golang-server
     ports:
       - '8080:8000'
     networks:
@@ -16,7 +15,7 @@ services:
       - db
   db:
     image: mysql
-    container_name: golang-db
+    container_name: mysql-app-db
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: 'golang-db'
