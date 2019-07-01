@@ -1,18 +1,5 @@
 version: '3'
 services:
-  # Golang server
-  app:
-    container_name: golang-server
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - '8080:8000'
-    networks:
-      - mynet
-    restart: unless-stopped
-    depends_on:
-      - db
   db:
     image: mysql
     container_name: mysql-app-db
@@ -25,13 +12,10 @@ services:
       MYSQL_PASSWORD: 'password'
       # Password for root access
       MYSQL_ROOT_PASSWORD: 'password'
+    # TODO Remove(only for dev)
     ports:
       # <Port exposed> : < MySQL Port running inside container>
       - '3306:3306'
-    # TODO sec
-    # expose:
-      # Opens port 3306 on the container
-      # - '3306'
       # Where our data will be persisted
     volumes:
       - my-db:/var/lib/mysql
@@ -39,6 +23,19 @@ services:
       # - ./mysql/my.cnf:/etc/mysql/my.cnf
     networks:
       - mynet
+  # Golang server
+  app:
+    container_name: golang_server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8000'
+    networks:
+      - mynet
+    restart: unless-stopped
+    depends_on:
+      - db
 # Docker Networks
 networks:
   mynet:
