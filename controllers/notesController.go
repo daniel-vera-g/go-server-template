@@ -7,8 +7,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	u "./utils"
 	"github.com/daniel-vera-g/go-server-template/models"
+	u "github.com/daniel-vera-g/go-server-template/utils"
 )
 
 var CreateNote = func(w http.ResponseWriter, r *http.Request) {

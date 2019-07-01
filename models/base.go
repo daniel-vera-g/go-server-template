@@ -7,7 +7,7 @@ import (
 	"fmt"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 var db *gorm.DB
@@ -27,10 +27,10 @@ func init() {
 
 	username := "root"
 	password := "password"
-	dbName := "notes"
-	dbHost := "172.18.0.2"
+	dbName := "golang-db"
+	dbHost := "db"
 
-	dbUri := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", dbHost, username, dbName, password)
+	dbUri := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8&parseTime=True&loc=Local", username, password, dbHost, dbName)
 	fmt.Println(dbUri)
 
 	conn, err := gorm.Open("mysql", dbUri)

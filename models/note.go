@@ -6,7 +6,7 @@ package models
 import (
 	"fmt"
 
-	u "../utils"
+	u "github.com/daniel-vera-g/go-server-template/utils"
 	"github.com/jinzhu/gorm"
 )
 

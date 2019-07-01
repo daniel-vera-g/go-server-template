@@ -3,7 +3,7 @@ package app
 import (
 	"net/http"
 
-	u "./utils"
+	u "github.com/daniel-vera-g/go-server-template/utils"
 )
 
 var NotFoundHandler = func(next http.Handler) http.Handler {

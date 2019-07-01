@@ -8,7 +8,7 @@ package models
 import (
 	"strings"
 
-	u "../utils"
+	u "github.com/daniel-vera-g/go-server-template/utils"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"

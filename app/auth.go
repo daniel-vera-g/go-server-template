@@ -11,8 +11,8 @@ import (
 	"net/http"
 	"strings"
 
-	u "./utils"
 	"github.com/daniel-vera-g/go-server-template/models"
+	u "github.com/daniel-vera-g/go-server-template/utils"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
