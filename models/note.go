@@ -1,6 +1,7 @@
 /*
  * Let users create/store notes
  */
+
 package models
 
 import (

@@ -3,6 +3,7 @@
  * create new account
  * and genrate JWT token
  */
+
 package models
 
 import (

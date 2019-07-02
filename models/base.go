@@ -1,6 +1,7 @@
 /*
  * Init function to connect to the DB
  */
+
 package models
 
 import (
