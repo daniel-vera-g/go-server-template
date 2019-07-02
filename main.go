@@ -39,7 +39,7 @@ func main() {
 		port = "8000" //localhost
 	}
 
-	fmt.Println("Server running on Port: %s", port)
+	fmt.Println("Server running on Port: ", port)
 
 	err := http.ListenAndServe(":"+port, router) //Launch the app, visit localhost:8000/api
 	if err != nil {
