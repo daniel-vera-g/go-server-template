@@ -14,7 +14,7 @@ var db *gorm.DB
 
 func init() {
 
-	//TODO add enc variables
+	//TODO add env variables
 	// e := godotenv.Load()
 	// if e != nil {
 	// fmt.Print(e)
