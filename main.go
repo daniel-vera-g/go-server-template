@@ -24,7 +24,7 @@ func main() {
 
 	// Create, retrieve, change & delete note
 	router.HandleFunc("/api/notes/new", controllers.CreateNote).Methods("POST")
-	router.HandleFunc("/api/me/notes", controllers.GetNotesFor).Methods("GET") //  user/2/notes
+	router.HandleFunc("/api/me/notes", controllers.GetNotesFor).Methods("GET")
 	// TODO
 	// router.HandleFunc("/api/me/notes/change", controllers.ChangeNote).Methods("PUT")
 	// TODO
