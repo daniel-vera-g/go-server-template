@@ -13,15 +13,18 @@ import (
 
 var CreateNote = func(w http.ResponseWriter, r *http.Request) {
 
-	user := r.Context().Value("user").(uint) //Grab the id of the user that send the request
+	//Grab the id of the user that send the request
+	user := r.Context().Value("user").(uint)
 	note := &models.Note{}
 
+	// Get the note from the request
 	err := json.NewDecoder(r.Body).Decode(note)
 	if err != nil {
 		u.Respond(w, u.Message(false, "Error while decoding request body"))
 		return
 	}
 
+	// Create note & send response
 	note.UserId = user
 	resp := note.Create()
 	u.Respond(w, resp)
@@ -29,6 +32,7 @@ var CreateNote = func(w http.ResponseWriter, r *http.Request) {
 
 var GetNotesFor = func(w http.ResponseWriter, r *http.Request) {
 
+	// Get id of user + notes of user, & send notes
 	id := r.Context().Value("user").(uint)
 	data := models.GetNotes(id)
 	resp := u.Message(true, "success")
