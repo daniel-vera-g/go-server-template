@@ -18,6 +18,8 @@ func main() {
 
 	router := mux.NewRouter()
 
+	router.Use(app.JwtAuthentication) //attach JWT auth middleware
+
 	// Sign up & login
 	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
@@ -29,8 +31,6 @@ func main() {
 	// router.HandleFunc("/api/me/notes/change", controllers.ChangeNote).Methods("PUT")
 	// TODO
 	// router.HandleFunc("/api/me/notes/delete/" controllers.DeleteNote).Methods("DELETE")
-
-	router.Use(app.JwtAuthentication) //attach JWT auth middleware
 
 	// router.NotFoundHandler = app.NotFoundHandler
 
