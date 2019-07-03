@@ -19,12 +19,12 @@ type Note struct {
 }
 
 /*
- This struct function validate the required parameters sent through the http request body
-
+This struct function validate the required parameters sent through the http request body
 returns message and true if the requirement is met
 */
 func (note *Note) Validate() (map[string]interface{}, bool) {
 
+	// Form validation for the note submition
 	if note.Name == "" {
 		return u.Message(false, "Note name should be on the payload"), false
 	}
@@ -37,7 +37,7 @@ func (note *Note) Validate() (map[string]interface{}, bool) {
 		return u.Message(false, "User is not recognized"), false
 	}
 
-	//All the required parameters are present
+	//All the required parameters are present -> Create JSON response
 	return u.Message(true, "success"), true
 }
 
@@ -49,6 +49,7 @@ func (note *Note) Create() map[string]interface{} {
 
 	GetDB().Create(note)
 
+	// Create & return JSON response
 	resp := u.Message(true, "success")
 	resp["note"] = note
 	return resp
