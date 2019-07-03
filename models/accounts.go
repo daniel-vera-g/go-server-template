@@ -1,7 +1,7 @@
 /*
  * Validate the JWT data from the client,
  * create new account
- * and genrate JWT token
+ * and generate JWT token
  */
 
 package models
