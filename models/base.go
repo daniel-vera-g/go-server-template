@@ -30,6 +30,7 @@ func init() {
 	password := "password"
 	dbName := "golang-db"
 	dbHost := "db"
+	// dbHost := "172.18.0.2"
 	dbPort := 3306
 
 	dbUri := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local", username, password, dbHost, dbPort, dbName)
@@ -38,7 +39,7 @@ func init() {
 	if err != nil {
 		fmt.Print(err)
 	}
-	fmt.Println("Connected to: %s", dbUri)
+	fmt.Printf("Connected to: %s", dbUri)
 
 	db = connection
 	db.Debug().AutoMigrate(&Account{}, &Note{})
