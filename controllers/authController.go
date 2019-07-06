@@ -2,6 +2,7 @@
  * Handler for:
  * /user/new and /user/login path
  */
+
 package controllers
 
 import (
@@ -15,20 +16,23 @@ import (
 var CreateAccount = func(w http.ResponseWriter, r *http.Request) {
 
 	account := &models.Account{}
-	err := json.NewDecoder(r.Body).Decode(account) //decode the request body into struct and failed if any error occur
+	//decode the request body into struct and failed if any error occur
+	err := json.NewDecoder(r.Body).Decode(account)
 	if err != nil {
 		u.Respond(w, u.Message(false, "Invalid request"))
 		return
 	}
 
-	resp := account.Create() //Create account
+	//Create account
+	resp := account.Create()
 	u.Respond(w, resp)
 }
 
 var Authenticate = func(w http.ResponseWriter, r *http.Request) {
 
 	account := &models.Account{}
-	err := json.NewDecoder(r.Body).Decode(account) //decode the request body into struct and failed if any error occur
+	//decode the request body into struct and failed if any error occur
+	err := json.NewDecoder(r.Body).Decode(account)
 	if err != nil {
 		u.Respond(w, u.Message(false, "Invalid request"))
 		return
