@@ -9,7 +9,8 @@ COPY . .
 
 # Download all the dependencies
 # https://stackoverflow.com/questions/28031603/what-do-three-dots-mean-in-go-command-line-invocations
-RUN go get -d -v ./...
+# TODO remove -t in procutio & spearate docker files
+RUN go get -d -v -t ./...
 
 # Install the package
 RUN go install -v ./...
