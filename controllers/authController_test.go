@@ -3,7 +3,6 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"math/rand"
 	"net/http"
 	"net/http/httptest"
@@ -64,8 +63,6 @@ func (suite *HandlerSuite) SetupSuite() {
 		panic(err)
 	}
 
-	fmt.Println("The JWT token is: ", jwtRes)
-
 	// Token for further Testing
 	suite.jwtToken = jwtRes.Account.Token
 	suite.name = RandSeq(8)
@@ -90,8 +87,7 @@ type LoginCresentials struct {
 
 var psswd, uname string
 
-// func (suite *HandlerSuite) TestCreateAccount() {
-func (suite *HandlerSuite) some() {
+func (suite *HandlerSuite) TestCreateAccount() {
 
 	// Set up credentials
 	credentials := LoginCresentials{
@@ -131,8 +127,7 @@ func (suite *HandlerSuite) some() {
 	}
 }
 
-// func (suite *HandlerSuite) TestAuthenticate() {
-func (suite *HandlerSuite) someOther() {
+func (suite *HandlerSuite) TestAuthenticate() {
 
 	// Set up credentials
 	// credentials := LoginCresentials{
