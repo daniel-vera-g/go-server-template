@@ -15,4 +15,5 @@ before_install:
 
 script:
   - ./.travis.gofmt.sh
+  - go get -d -v -t ./...
   - go test -v -race $(go list ./... | grep -v vendor)
