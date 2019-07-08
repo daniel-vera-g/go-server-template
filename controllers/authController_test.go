@@ -3,6 +3,7 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"net/http"
 	"net/http/httptest"
@@ -13,22 +14,72 @@ import (
 )
 
 // Suite for the test environement
-type authSuite struct {
+type HandlerSuite struct {
 	suite.Suite
+	// Auth
 	uname string
 	psswd string
+	// Notes
+	jwtToken string
+	name     string
+	note     string
 }
 
-func (suite *authSuite) SetupTest() {
+func (suite *HandlerSuite) SetupSuite() {
 	// Generate random string for email & password
 	rand.Seed(time.Now().UnixNano())
-	suite.psswd = randSeq(10)
-	suite.uname = randSeq(8)
+	psswd := RandSeq(10)
+	uname := RandSeq(8)
+
+	// Set up credentials
+	credentials := LoginCredentials{
+		Email:    uname + "@test.com",
+		Password: psswd,
+	}
+
+	// generate json
+	jsonPayload, err := json.Marshal(credentials)
+
+	// HTTP request ressource
+	ressource := "/api/user/new"
+
+	// Request object
+	req, err := http.NewRequest("POST", ressource, bytes.NewBuffer(jsonPayload))
+	if err != nil {
+		suite.T().Fatal(err)
+	}
+
+	// Set header
+	req.Header.Set("Content-Type", "application/json")
+
+	// Record & make request
+	res := httptest.NewRecorder()
+	handler := http.HandlerFunc(CreateAccount)
+	handler.ServeHTTP(res, req)
+
+	// Get json response
+	// var resJson map[string]interface{}
+	var jwtRes jwtResponse
+	if err := json.NewDecoder(res.Body).Decode(&jwtRes); err != nil {
+		panic(err)
+	}
+
+	fmt.Println("The JWT token is: ", jwtRes)
+
+	// Token for further Testing
+	suite.jwtToken = jwtRes.Account.Token
+	suite.name = RandSeq(8)
+	suite.note = RandSeq(8)
+
+	// Generate random string for email & password
+	rand.Seed(time.Now().UnixNano())
+	suite.uname = RandSeq(8)
+	suite.psswd = RandSeq(10)
 }
 
 // Activate the test suite
 func TestSuite(t *testing.T) {
-	suite.Run(t, new(authSuite))
+	suite.Run(t, new(HandlerSuite))
 }
 
 // Credentials for account testing
@@ -39,7 +90,8 @@ type LoginCresentials struct {
 
 var psswd, uname string
 
-func (suite *authSuite) TestCreateAccount() {
+// func (suite *HandlerSuite) TestCreateAccount() {
+func (suite *HandlerSuite) some() {
 
 	// Set up credentials
 	credentials := LoginCresentials{
@@ -79,7 +131,8 @@ func (suite *authSuite) TestCreateAccount() {
 	}
 }
 
-func (suite *authSuite) TestAuthenticate() {
+// func (suite *HandlerSuite) TestAuthenticate() {
+func (suite *HandlerSuite) someOther() {
 
 	// Set up credentials
 	// credentials := LoginCresentials{
@@ -145,7 +198,7 @@ func (suite *authSuite) TestAuthenticate() {
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 // Create random strings with specific length
-func randSeq(n int) string {
+func RandSeq(n int) string {
 	b := make([]rune, n)
 	for i := range b {
 		b[i] = letters[rand.Intn(len(letters))]
