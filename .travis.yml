@@ -10,6 +10,9 @@ go:
   - "1.11"
   - tip
 
+before_install:
+  - chmod +x ./.travis.gofmt.sh
+
 script:
   - ./.travis.gofmt.sh
   - go test -v -race $(go list ./... | grep -v vendor)
