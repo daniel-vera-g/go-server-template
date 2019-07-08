@@ -18,6 +18,8 @@ func main() {
 
 	router := mux.NewRouter()
 
+	router.Use(app.JwtAuthentication) //attach JWT auth middleware
+
 	// Sign up & login
 	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
@@ -30,8 +32,6 @@ func main() {
 	// TODO
 	// router.HandleFunc("/api/me/notes/delete/" controllers.DeleteNote).Methods("DELETE")
 
-	router.Use(app.JwtAuthentication) //attach JWT auth middleware
-
 	// router.NotFoundHandler = app.NotFoundHandler
 
 	port := os.Getenv("PORT")
@@ -39,7 +39,7 @@ func main() {
 		port = "8000" //localhost
 	}
 
-	fmt.Println("Server running on Port: %s", port)
+	fmt.Println("Server running on Port: ", port)
 
 	err := http.ListenAndServe(":"+port, router) //Launch the app, visit localhost:8000/api
 	if err != nil {

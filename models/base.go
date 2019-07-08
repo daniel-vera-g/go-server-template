@@ -1,6 +1,7 @@
 /*
  * Init function to connect to the DB
  */
+
 package models
 
 import (
@@ -29,16 +30,18 @@ func init() {
 	password := "password"
 	dbName := "golang-db"
 	dbHost := "db"
+	// dbHost := "172.18.0.2"
+	dbPort := 3306
 
-	dbUri := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8&parseTime=True&loc=Local", username, password, dbHost, dbName)
-	fmt.Println(dbUri)
+	dbUri := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local", username, password, dbHost, dbPort, dbName)
 
-	conn, err := gorm.Open("mysql", dbUri)
+	connection, err := gorm.Open("mysql", dbUri)
 	if err != nil {
 		fmt.Print(err)
 	}
+	fmt.Printf("Connected to: %s", dbUri)
 
-	db = conn
+	db = connection
 	db.Debug().AutoMigrate(&Account{}, &Note{})
 }
 

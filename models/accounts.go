@@ -1,8 +1,9 @@
 /*
  * Validate the JWT data from the client,
  * create new account
- * and genrate JWT token
+ * and generate JWT token
  */
+
 package models
 
 import (
@@ -22,7 +23,7 @@ type Token struct {
 	jwt.StandardClaims
 }
 
-//a struct to rep user account
+//a struct to represent a user account
 type Account struct {
 	gorm.Model
 	Email    string `json:"email"`
@@ -33,10 +34,10 @@ type Account struct {
 //Validate incoming user details...
 func (account *Account) Validate() (map[string]interface{}, bool) {
 
+	// Form validation for Email & password length
 	if !strings.Contains(account.Email, "@") {
 		return u.Message(false, "Email address is required"), false
 	}
-
 	if len(account.Password) < 6 {
 		return u.Message(false, "A password with at least 6 digits is required"), false
 	}
@@ -62,9 +63,11 @@ func (account *Account) Create() map[string]interface{} {
 		return resp
 	}
 
+	// Password hashing
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(account.Password), bcrypt.DefaultCost)
 	account.Password = string(hashedPassword)
 
+	// Add account to DB
 	GetDB().Create(account)
 
 	if account.ID <= 0 {
@@ -81,6 +84,7 @@ func (account *Account) Create() map[string]interface{} {
 
 	account.Password = "" //delete password
 
+	// Create & return JSON account response
 	response := u.Message(true, "Account has been created")
 	response["account"] = account
 	return response
@@ -89,6 +93,7 @@ func (account *Account) Create() map[string]interface{} {
 func Login(email, password string) map[string]interface{} {
 
 	account := &Account{}
+	// Get the Account from the DB
 	err := GetDB().Table("accounts").Where("email = ?", email).First(account).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -97,6 +102,7 @@ func Login(email, password string) map[string]interface{} {
 		return u.Message(false, "Connection error. Please retry")
 	}
 
+	// Check for right password
 	err = bcrypt.CompareHashAndPassword([]byte(account.Password), []byte(password))
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword { //Password does not match!
 		return u.Message(false, "Invalid login credentials. Please try again")
@@ -112,6 +118,7 @@ func Login(email, password string) map[string]interface{} {
 	tokenString, _ := token.SignedString([]byte("tokenpassword"))
 	account.Token = tokenString //Store the token in the response
 
+	// Create JSON & return response
 	resp := u.Message(true, "Logged In")
 	resp["account"] = account
 	return resp
@@ -120,6 +127,7 @@ func Login(email, password string) map[string]interface{} {
 func GetUser(u uint) *Account {
 
 	acc := &Account{}
+	// Get user from DB
 	GetDB().Table("accounts").Where("id = ?", u).First(acc)
 	if acc.Email == "" { //User not found!
 		return nil
