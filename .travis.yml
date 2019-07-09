@@ -14,6 +14,13 @@ go:
   - "1.11"
   - tip
 
+before_install:
+  # Let's stop postgresql
+  - sudo service postgresql stop
+  - sudo service mysql stop
+  # wait for mysql to shutdown
+  - while sudo lsof -Pi :3306 -sTCP:LISTEN -t; do sleep 1; done
+
 install:
   - docker-compose up --build -d # Run application, tests...
 
