@@ -9,15 +9,19 @@ COPY . .
 
 # Download all the dependencies
 # https://stackoverflow.com/questions/28031603/what-do-three-dots-mean-in-go-command-line-invocations
-# TODO remove -t in procutio & spearate docker files
-RUN go get -d -v -t ./...
+# TODO remove -t in production & spearate docker files
+RUN go get -d -v ./...
 
-# Install the package
-# RUN go install -v ./...
+# Install the package and create test binary
+RUN go install -v ./... && \
+	cd ./controllers && \
+    CGO_ENABLED=0 GOOS=linux go test -c
+
+# Run tests
+RUN ./controllers/controllers.test
 
 # This container exposes port 8080 to the outside world
 EXPOSE 8080
 
 # Run the executable
 CMD ["go", "run", "main.go"]
-# CMD ["go", "test", "-v", "./..."]
