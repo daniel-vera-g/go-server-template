@@ -25,6 +25,8 @@ services:
       - mynet
   # Golang server
   app:
+    depends_on:
+      - db
     container_name: golang_server
     build:
       context: .
@@ -34,8 +36,8 @@ services:
     networks:
       - mynet
     restart: unless-stopped
-    depends_on:
-      - db
+    # Wait for mysql to start
+    entrypoint: ./wait-for-mysql.sh db:3306
 # Docker Networks
 networks:
   mynet:
