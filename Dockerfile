@@ -10,15 +10,12 @@ COPY . .
 # Download all the dependencies
 # https://stackoverflow.com/questions/28031603/what-do-three-dots-mean-in-go-command-line-invocations
 # TODO remove -t in production & spearate docker files
-RUN go get -d -v ./...
+RUN go get -d -v -t ./...
 
 # Install the package and create test binary
 RUN go install -v ./... && \
-	cd ./controllers && \
+    cd ./controllers && \
     CGO_ENABLED=0 GOOS=linux go test -c
-
-# Run tests
-RUN ./controllers/controllers.test
 
 # This container exposes port 8080 to the outside world
 EXPOSE 8080

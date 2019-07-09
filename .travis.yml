@@ -14,9 +14,12 @@ go:
   - "1.11"
   - tip
 
-script:
-  - ./.travis.gofmt.sh
-
-after_script:
-  - chmod +x ./.travis.gofmt.sh # Format code
+install:
   - docker-compose up --build -d # Run application, tests...
+
+before_script:
+  - chmod +x ./.travis.gofmt.sh
+
+script:
+  - ./.travis.gofmt.sh # Format code
+  - docker exec golang_server ./controllers/controllers.test -test.v # Run tests
