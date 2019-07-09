@@ -1,8 +1,12 @@
 # .travis.yml
 language: go
 
+services:
+  - docker
+
 sudo: false
 
+# Test for different go environemets
 go:
   - "1.8"
   - "1.9"
@@ -10,10 +14,9 @@ go:
   - "1.11"
   - tip
 
-before_install:
-  - chmod +x ./.travis.gofmt.sh
-
 script:
   - ./.travis.gofmt.sh
-  - go get -d -v -t ./...
-  - go test -v -race $(go list ./... | grep -v vendor)
+
+after_script:
+  - chmod +x ./.travis.gofmt.sh # Format code
+  - docker-compose up --build -d # Run application, tests...
